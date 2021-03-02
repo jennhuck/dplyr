@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1599764884200.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3527808591",
+    "id" : "290D39FD",
+    "lastKnownWriteTime" : 1599765043,
+    "last_content_update" : 1599765043569,
+    "path" : "C:/Users/jah2ax.ESERVICES/Box Sync/_R/workshops/workshops_teaching/dplyr_2020-fall/documents/dplyr_with_answers.Rmd",
+    "project_path" : "documents/dplyr_with_answers.Rmd",
+    "properties" : {
+        "cursorPosition" : "345,50",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

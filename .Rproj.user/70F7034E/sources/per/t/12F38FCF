@@ -1,0 +1,29 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1599676358890.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1344724913",
+    "id" : "12F38FCF",
+    "lastKnownWriteTime" : 1599764994,
+    "last_content_update" : 1599850175282,
+    "path" : "C:/Users/jah2ax.ESERVICES/Box Sync/_R/workshops/workshops_teaching/dplyr_2020-fall/documents/dplyr.Rmd",
+    "project_path" : "documents/dplyr.Rmd",
+    "properties" : {
+        "cursorPosition" : "235,0",
+        "docOutlineSize" : "107.30321131349262",
+        "docOutlineVisible" : "1",
+        "ignored_words" : "Albemarle,Cale,meantotalvalue,backticks\n",
+        "last_setup_crc32" : "",
+        "scrollLine" : "206"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

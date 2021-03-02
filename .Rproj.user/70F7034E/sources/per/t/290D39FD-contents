@@ -1,0 +1,418 @@
+---
+title: "Data Transformation in R with dplyr"
+author: "Jennifer Huck"
+date: "9/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Before we get started:
+
+* Go to Tools -> Global Options -> Code -> Make sure "Soft-Wrap R Source Files" is checked.
+* Go to Tools -> Global Options -> R Markdown -> Make sure "Show Output Inline for all R Markdown Documents" is checked.
+
+# Introducing dplyr
+We will be working with the `dplyr` package today.  `dplyr` is useful when working with tabular data to rename and select columns, and summarize insights from your data.  `dplyr` is part of the tidyverse - a larger collection of packages designed for data science.  
+
+We will very briefly rely on `readr` and the `here` package as well.
+
+### Quick note: R Markdown
+We are going to run this session in R Markdown.  R Markdown is great because it contains both your code and the narration that a reader needs to understand your work, all in one file.  This also makes it MUCH easier for someone else to understand your work, or for you to understand your own work six months in the future.  Simply re-run the code in your R Markdown (.rmd) file, and export the result as html, pdf, or other file types.  
+
+For this session, we will run code *chunks* by clicking on the green, right-pointing triangle arrow, or click into the code chunk and type *CTRL/CMD+SHIFT+Enter* to run the entire code chunk or *CTRL/CMD+Enter* to run a line or a highlighted section.  
+
+You can optionally clear the output by clicking the X in the upper right corner.
+
+We will get some red text after loading our packages -- that's fine.  It is just a regular message.
+
+Let's start by loading our packages:
+```{r load packages}
+library(dplyr) # "a consistent set of verbs that help you solve the most common data manipulation challenges"
+library(readr) # "a fast and friendly way to read rectangular data"
+library(here) # for a simple way to find your files
+```
+
+## Our data: Albemarle County Homes
+We will be working with Albemarle County real estate data.  The original data came from the Albemarle County Office of Geographic Services.  The RDS team has already cleaned this data from its original, raw, messy form.  If you are interested in following the steps from raw to final form, check out the [PhD Plus series](https://uvastatlab.github.io/phdplus2020/) for Exploratory Data Analysis and Data Preparation.
+
+Let's read in our data with the `readr::read_csv()` function.  We will also use `here::here()` for simple file management. The `here` package offers a simple way to work with your files, especially in an R Markdown setting.
+
+Note from a file management perspective, we have our raw data in a folder designated specifically for raw data. 
+
+```{r import data}
+homes <- read_csv(here("data", "raw", "albemarle_homes_2020.csv"))
+```
+
+Let's inspect and preview our data.
+
+```{r inspect and preview}
+# inspect the data
+homes
+
+# alternative ways to preview the data
+# View(homes)
+# glimpse(homes)
+# str(homes)
+# head(homes)
+
+```
+
+## Rename columns
+Let's tidy up our column names.  It is helpful to have simple, meaningful names, that are formatted consistently.  You have to type column names out in R, so make it easy on yourself. 
+
+Note that I will use "column" and "variable" interchangeably.  Later, I will also use "row" and "observation" interchangeably.
+
+In R, a general rule is avoid spaces and dashes in your variable names, and start your variable names with a letter. 
+
+Let's review and rename column names.
+
+```{r review names}
+# review columns names
+names(homes)
+```
+
+You can do some simple transformations of names:
+```{r case}
+#select all columns, change to upper case case
+select_all(homes, toupper) #can also do tolower
+```
+
+This is a reminder that you have to save an object to actually store it:
+```{r review names again}
+#look, we haven't actually changed anything yet
+names(homes)
+```
+
+These names look good, except for that `High School District` - that one has spaces and is inconsistent with the format of the other district variables. Let's rename it, and we will save the object this time.
+```{r rename hsdistrict}
+# rename problematic column name
+# use: new_name = old_name
+homes <- rename(homes, hsdistrict = "High School District")
+names(homes)
+```
+
+## Select: select columns
+To select a few columns in a data frame, use the `select()` function.  The first argument in the function is the data frame (`homes`), and everything following that are columns to keep.
+```{r select simple}
+# select three variables
+select(homes, totalvalue, yearbuilt, finsqft)
+```
+
+Here's a slightly more complex example: select `totalvalue` column, add everything back in (effectively moves total value to first position), remove column `condition2`, and save to our `homes` object.
+
+(`condition2` is one of the variables in our dataframe that we don't need.  It is a duplicate of the `condition` variable, that tells us if the home is in "excellent," "fair," etc. condition.)
+```{r select complex}
+homes <- select(homes, totalvalue, everything(), -condition2)
+homes
+```
+
+## Your turn #1
+Using the `homes` data, keep the `condition`, `cooling,` and `bedroom` variables only. (Do not update the data frame.)
+```{r your_turn 1}
+select(homes, condition, cooling, bedroom)
+```
+
+## Quick review of our data
+First, let's review our data with the `summary()` function:
+```{r summary}
+# get a summary of dataset variables
+summary(homes)
+```
+
+Here's a quick review of the school names in our dataset.  We can use the `distinct()` function to select only "distinct" or unique rows in a data frame.
+```{r distinct names}
+# review high school, middle school, and elementary school names first
+distinct(homes, hsdistrict)
+distinct(homes, msdistrict)
+distinct(homes, esdistrict)
+```
+
+## Filter: filter rows
+Let's look at the homes that have Stone-Robinson for their elementary school.  To return specific rows, use`filter()`:
+```{r filter}
+# Look at Stone-Robinson esdistrict homes only
+filter(homes, hsdistrict == "Western Albemarle")
+```
+
+When we use `filter()`, we can use various operators:
+
+* ==, >, >=, etc.
+* &, |, !
+* is.na()
+
+## Your turn #2
+Using the `homes` data, keep the observations where `finsqft` is less than 1000.  (Do not save the object.)
+```{r your_turn 2}
+filter(homes, finsqft < 1000)
+```
+
+Remember: 
+
+* `select()` returns specific columns
+* `filter()` returns specific rows
+
+## Arrange: sort rows
+Use `arrange()` to sort the order.  Let's take a closer look at which homes have the highest `totalvalue`.  
+```{r arrange}
+#look for max last sale price
+arrange(homes, totalvalue)
+```
+
+Oops, we wanted the highest values at top.  Let's use `desc`.
+```{r arrange descending}
+arrange(homes, desc(totalvalue))
+```
+
+## Your turn #3
+Using the `homes` data, sort the observations so the smallest values for `finsqft` are on top.  (Do not save the object.)
+```{r your_turn 3}
+arrange(homes, finsqft)
+```
+
+
+## Pipe: a series of functions
+What if you want to select and filter at the same time? There are three ways to do this: use intermediate steps, nested functions, or pipes.
+
+With intermediate steps, you create a temporary data frame and use that as input to the next function, like this:
+```{r intermediate steps}
+monticello <- filter(homes, hsdistrict == "Monticello")
+monticello_intermediate <- select(monticello, totalvalue, age)
+```
+
+This is readable, but can clutter up your workspace with lots of objects that you have to name individually. With multiple steps, that can be hard to keep track of.
+
+You can also nest functions (i.e. one function inside of another), like this:
+```{r nesting}
+monticello_nest <- select(filter(homes, hsdistrict == "Monticello"), totalvalue, age)
+```
+
+This can be difficult to read if too many functions are nested, as R evaluates the expression from the inside out (in this case, filtering, then selecting).
+
+The best option is a "pipe." Pipes let you take the output of one function and send it directly to the next, which is useful when you want to apply many functions to the same data frame. The pipe operator looks like `%>%`.  You can also type *CTRL/CMD + Shift + M* as a keyboard shortcut.  (M since the pipe originally came from the `magrittr` package.)  It is helpful to say yourself "and then" when you see a pipe.
+
+You don't need to put the data frame `homes` inside the parentheses.  It already gets piped in right at the beginning. A pipe moves left to right.
+
+Let's recreate the above examples with a pipe:
+```{r pipe}
+monticello_pipe <- homes %>% 
+  filter(hsdistrict == "Monticello") %>% 
+  select(totalvalue, age)
+```
+
+What's happening here: 
+
+* Take `homes` and then,
+* Retrieve only the observations that have hsdistrict equal to Monticello with `filter()`, and then
+* Keep the `totalvalue` and `age` columns with `select()`.
+
+## Your turn #4
+Using pipes, subset the `homes` data to include homes that are associated with the Western Albemarle high school district (`hsdistrict`), and retain only the columns `yearbuilt`, `totalrooms`, and `condition`.
+
+Save to a new object: `west_alb`.
+```{r your_turn 4}
+west_alb <- homes %>% 
+  filter(hsdistrict == "Western Albemarle") %>%
+  select(yearbuilt, totalrooms, condition)
+```
+
+## Count: number of observations
+When working with data, we often want to know the number of observations found for each categorical variable. For this task, `dplyr` provides `count()`. For example, if we wanted to count the number of rows of data for each high school district, we would do:
+
+```{r count}
+homes %>% 
+  count(hsdistrict)
+```
+
+We can also sort the values:
+```{r count sort}
+homes %>% 
+  count(hsdistrict, sort = TRUE)
+```
+
+## Your turn #5
+Use the `count()` function to create a table displaying the counts of `fullbath`.
+```{r your_turn 5}
+homes %>% 
+  count(fullbath)
+```
+
+## Mutate: compute new variables 
+Let's take a look at the summary statistics for `totalvalue`.  
+```{r summary totalvalue}
+#use mutate to transform the totalvalue
+summary(homes$totalvalue)
+```
+
+That max really is a lot higher than the other values.  We can use `dplyr::mutate()` to create, modify or delete numeric or logical columns.
+```{r mutate}
+# use mutate to log transform total value into a new numeric column and to compute new logical variable
+homes <- homes %>% 
+  mutate(logtotalvalue = log(totalvalue)) %>% 
+  select(logtotalvalue, everything()) #puts new variable first
+homes
+
+```
+
+Note that you have to remove NAs for summary statistics:
+```{r mutate mean}
+homes <- homes %>% 
+  mutate(pricier = totalvalue > mean(totalvalue, na.rm = TRUE))
+homes
+```
+
+
+## Your turn #6
+Create a new data frame from the `homes` data that meets the following criteria: contains only the `hsdistrict` column and a new column called `total_baths` containing a value that is equal to the total number of baths (`fullbath` plus `halfbath` times 0.5). Only the rows where total_baths is greater than 4.5 should be shown in the final data frame.
+
+Hint: think about how the commands should be ordered to produce this data frame! 
+
+Save object as: `homes_totalbaths`.
+```{r your_turn 6}
+homes_totalbaths <- homes %>%
+    mutate(total_baths = fullbath + halfbath * 0.5) %>%
+    filter(total_baths > 4.5) %>%
+    select(hsdistrict, total_baths)
+homes_totalbaths
+```
+
+## Value matching with %in%
+The `%in%` value matching operator can be used to match conditions provided in a vector using the `c()` function.  It can replace multiple conditional statements linked together with OR (i.e., with a vertical bar `|`).
+
+Let's focus on homes that are in the elementary school districts of two schools: Stone-Robinson and Cale.  We can do this with a vertical bar `|` which is the OR operator.
+```{r filter and arrange with vertical bar}
+homes %>% 
+  filter(esdistrict == "Stone-Robinson" | esdistrict == "Cale") %>% 
+  arrange(desc(totalvalue)) #desc order
+```
+
+That's fine when we only have two matches, but it is easy to see how that could get tedious and lengthy if you have more statements you want to match.  That's where the value matching operator `%in%` comes in:
+
+```{r filter and arrange with %in%}
+homes %>% 
+  filter(esdistrict %in% c("Stone-Robinson", "Cale")) %>% 
+  arrange(-totalvalue) #desc order
+```
+
+## Your turn #7
+Using the value matching operator, filter the `homes` dataset so only homes with `condition` of "Poor" or "Substandard" remain.  (Do not save the object.)
+```{r your_turn 7}
+homes %>%
+  filter(condition %in% c("Poor", "Substandard") ) 
+```
+
+## Group_by and Summarize: compare groups with "split-apply-combine" data analysis
+Many data analysis tasks can be approached using the split-apply-combine paradigm: split the data into groups, apply some analysis to each group, and then combine the results. `dplyr` makes this very easy through the use of the `group_by()` function.
+
+Let's first try a different example `group_by()` with a simple count.  We will take our `homes` dataset, then group by the elementary schools, then count the homes in each elementary school group:
+```{r count}
+homes %>% 
+  group_by(esdistrict) %>% 
+  count()
+```
+
+`group_by()` is often used together with `summarize()`, which collapses each group into a single-row summary of that group. `group_by()` takes as arguments the column names that contain the *categorical* variables for which you want to calculate the summary statistics. 
+
+Let's compute the max and median total value by high school district:
+```{r group_by and summarize}
+homes %>% 
+  group_by(hsdistrict) %>% 
+  summarize(medtotalvalue = median(totalvalue, na.rm = TRUE), # must remove NAs for summary stats
+            maxtotalvalue = max(totalvalue, na.rm = TRUE))
+```
+Note that `group_by()` gives us an R console message that we can safely ignore. 
+
+Also note that `summarize` and `summarise` are synonymous in dplyr.
+
+You can also group by multiple variables.  Here we are grouping by high schools and by middle schools. Let's also sort the values so that the highest median total value is on top.
+```{r group_by more than one attribute}
+# group_by high school district and by middle school district
+homes %>%
+  group_by(hsdistrict, msdistrict) %>%
+  summarize(medtotalvalue = median(totalvalue, na.rm = TRUE),
+            maxtotalvalue = max(totalvalue, na.rm = TRUE)) %>% 
+  arrange(desc(medtotalvalue))
+
+```
+
+## Your turn #8
+Use `group_by()` and `summarize()` to find the mean and max number of full baths for each middle school district.  (Do not save the object.)
+```{r your_turn 8}
+homes %>% 
+  group_by(msdistrict) %>% 
+  summarize(meanbath = mean(fullbath, na.rm = TRUE),
+            maxbath = max(fullbath, na.rm = TRUE))
+```
+
+## Pipe it together
+Put it all together with a pipe
+```{r pipe it all together}
+homes_new <- homes %>% 
+  mutate(logtotalvalue = log(totalvalue), #mutate multiple vars 
+         pricier = totalvalue > mean(totalvalue, na.rm = TRUE)) %>% 
+  group_by(esdistrict) %>% 
+  mutate(pricier_es = totalvalue > mean(totalvalue, na.rm = TRUE)) %>% 
+  select(totalvalue, logtotalvalue, pricier, pricier_es, esdistrict)
+homes_new
+```
+
+## Export your data
+Similar to the `read_csv()` function we used to read in a csv file, there is a `write_csv()` function that creates a csv file from a data frame.
+
+And since you did all that work, you might want to save a new, clean dataset.  Do not write over your raw data!
+
+It's best practice to put your processed data in a folder separate from your raw data.
+
+```{r export}
+write_csv(homes, here("data", "processed", "albemarle_homes_2020_processed.csv"))
+```
+
+## Another quick R Markdown note
+Now that we are finished, we can wrap things up by clicking the "Knit...Knit to HTML" button at the top.  We should see our complete document in the Viewer. 
+
+## What we did not cover
+There's only so much we can cover in a 90 minute workshop!  Here are more functions to consider:
+
+* `base::lapply()`: apply a function over a list or vector
+* `dplyr::bind_rows()` and `bind_cols()`: bind data frames by row and column
+* `dplyr::left_join()`, `right_join()`, `inner_join()`, and `full_join()`: mutating joins on relational data
+* `dplyr::semi_join()` and `anti_join()`: filtering joins on relational data
+* `base::union()`, `intersect()`, `setdiff()`, and `setequal()`: set operations
+* `tidyr::pivot_longer()` and `pivot_wider()` to reshape data
+* `tidyr::unite()` and `separate()`: create new columns by pasting strings together and separate character columns with regular expressions
+* `readr::parse_factors()`: parse factors
+* `lubridate`: package to work with dates and times
+* `stringr`: package to work with strings (part of core `tidyverse` package)
+* `janitor::clean_names()`: clean column names, package offers more data cleaning functions
+
+## More Learning Resources
+
+Similar to what we covered today: 
+
+* Data Carpentry's ["R for Social Scientists - Introducing dplyr and tidyr"](https://datacarpentry.org/r-socialsci/03-dplyr-tidyr/index.html) - good for dplyr and tidyr
+* R-Ladies Sydney's RYouWithMe [CleanItUp](https://rladiessydney.org/courses/ryouwithme/02-cleanitup-1/) series - good for dplyr and tidyr
+
+Expanded coverage of data wrangling:
+
+* R for Data Science [Wrangle](https://r4ds.had.co.nz/wrangle-intro.html) - covers more wrangling concepts than covered here
+
+Previous UVA Library workshops on data wrangling using the Albemarle County homes data:
+
+* [PhD Plus series](https://uvastatlab.github.io/phdplus2020/) for Exploratory Data Analysis and Data Preparation, by David Martin - step by step data prep for the Homes dataset we used today
+* UVA Library Research Data Services Fall 2019 [Data Wrangling in R workshop](https://clayford.github.io/DWR/), by Clay Ford - wide coverage of data wrangling concepts
+
+Bonus!  Here package, and file naming:
+
+* Malcolm Barrett's [Why should I use the here package when I'm already using projects?](https://malco.io/2018/11/05/why-should-i-use-the-here-package-when-i-m-already-using-projects/)
+* Jenny Bryan's great advice about [how to name files](https://speakerdeck.com/jennybc/how-to-name-files).  She is talking about file names, but the same holds true for variable names.
+
+## Cheat Sheets
+
+* RStudio's [Data Wrangling with dplyr and tidyr Cheat sheet](https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
+* RStudio's [R Markdown Cheat Sheet](https://rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf)
+
+## Citation
+
+This workshop was designed in part using Data Carpentry's ["R for Social Scientists - Introducing dplyr and tidyr"](https://datacarpentry.org/r-socialsci/03-dplyr-tidyr/index.html) workshop, licensed under CC-BY 4.0 2018–2020 by The Carpentries, as well as R-Ladies Sydney RYouWithMe [CleanItUp](https://rladiessydney.org/courses/ryouwithme/02-cleanitup-1/) series.
