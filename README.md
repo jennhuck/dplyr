@@ -36,21 +36,21 @@ dplyr workshop project directory:
 
 +-- data-processed
 
-|   \\-- empty.csv
+|---\\-- empty.csv
 
 +-- data-raw
 
-|   \\-- albemarle_homes_2020.csv
+|---\\-- albemarle_homes_2020.csv
 
 +-- documents
 
-|   +-- dplyr.html
+|---+-- dplyr.html
 
-|   +-- dplyr.Rmd
+|---+-- dplyr.Rmd
 
-|   +-- dplyr_answers.html
+|---+-- dplyr_answers.html
 
-|   \\-- dplyr_answers.Rmd
+|---\\-- dplyr_answers.Rmd
 
 +-- dplyr.Rproj
 
