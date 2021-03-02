@@ -21,6 +21,8 @@ We will very briefly rely on `readr` package as well.
 
 You might want to reference UVA Library's Michele Claibourn's [Data Exploration and Wrangling](https://uvastatlab.github.io/phdplus2021/wrangling_prep.html) page.  That offers a useful, quick overview of the main dplyr functions. 
 
+The dplyr workshop materials are available on [GitHub](https://github.com/jennhuck/dplyr).
+
 ## Our data: Albemarle County Homes
 We will be working with Albemarle County real estate data.  The original data came from the Albemarle County Office of Geographic Services.  The RDS team has already cleaned this data from its original, raw, messy form.  If you are interested in following the steps from raw to final form, check out the [PhD Plus series](https://uvastatlab.github.io/phdplus2020/) for Exploratory Data Analysis and Data Preparation.
 

@@ -1,9 +1,9 @@
 {
     "id": "EBE0DFC2",
-    "path": "C:/Users/jah2ax.ESERVICES/Box Sync/_R/workshops/workshops_teaching/dplyr/documents/dplyr.Rmd",
+    "path": "C:/Users/jah2ax.ESERVICES/Documents/GitHub/dplyr/documents/dplyr.Rmd",
     "project_path": "documents/dplyr.Rmd",
     "type": "r_markdown",
-    "hash": "289768518",
+    "hash": "3182623388",
     "contents": "",
     "dirty": false,
     "created": 1611169128893.0,
@@ -12,16 +12,16 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "374,91",
-        "scrollLine": "0",
+        "cursorPosition": "23,3",
+        "scrollLine": "18",
         "last_setup_crc32": ""
     },
     "folds": "",
-    "lastKnownWriteTime": 1614718120,
+    "lastKnownWriteTime": 1614719785,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1614718120863,
+    "last_content_update": 1614719785387,
     "read_only": false,
     "read_only_alternatives": []
 }

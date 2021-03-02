@@ -183,6 +183,7 @@ pre code {
 <p>We will be working with the <code>dplyr</code> package today. <code>dplyr</code> is useful when working with tabular data to rename and select columns, and summarize insights from your data. <code>dplyr</code> is part of the tidyverse - a larger collection of packages designed for data science.</p>
 <p>We will very briefly rely on <code>readr</code> package as well.</p>
 <p>You might want to reference UVA Library’s Michele Claibourn’s <a href="https://uvastatlab.github.io/phdplus2021/wrangling_prep.html">Data Exploration and Wrangling</a> page. That offers a useful, quick overview of the main dplyr functions.</p>
+<p>The dplyr workshop materials are available on <a href="https://github.com/jennhuck/dplyr">GitHub</a>.</p>
 <div id="our-data-albemarle-county-homes" class="section level2">
 <h2>Our data: Albemarle County Homes</h2>
 <p>We will be working with Albemarle County real estate data. The original data came from the Albemarle County Office of Geographic Services. The RDS team has already cleaned this data from its original, raw, messy form. If you are interested in following the steps from raw to final form, check out the <a href="https://uvastatlab.github.io/phdplus2020/">PhD Plus series</a> for Exploratory Data Analysis and Data Preparation.</p>
@@ -439,7 +440,7 @@ summary(homes)</code></pre>
 ##  Max.   :1.0000   Max.   :1.00000  
 ## </code></pre>
 <p>Here’s a quick review of the school names in our dataset. We can use the <code>distinct()</code> function to select only “distinct” or unique rows in a data frame.</p>
-<pre class="r"><code># review high school, middle school, and elementary school names first
+<pre class="r"><code># review high school, middle school, and elementary school names
 distinct(homes, hsdistrict)</code></pre>
 <pre><code>## # A tibble: 4 x 1
 ##   hsdistrict       
@@ -485,11 +486,10 @@ distinct(homes, hsdistrict)</code></pre>
 </div>
 <div id="filter-filter-rows" class="section level2">
 <h2>Filter: filter rows</h2>
-<p>Let’s look at the homes that have Stone-Robinson for their elementary school. To return specific rows, use<code>filter()</code>.</p>
-<p>When we use <code>filter()</code>, we can use various logical tests:</p>
+<p>To return specific rows, use<code>filter()</code>. When we use <code>filter()</code>, we can use various logical tests:</p>
 <ul>
-<li>==, &gt;, &gt;=, &lt;, &lt;=</li>
-<li>&amp;, |, !</li>
+<li>==, &gt;, &gt;=, &lt;, &lt;=, !=</li>
+<li>&amp;, |</li>
 <li>x %in% y (x is a member of y)</li>
 <li>is.na(), !is.na()</li>
 </ul>
@@ -754,7 +754,7 @@ monticello_intermediate &lt;- select(monticello, totalvalue, age)</code></pre>
 <p>This is readable, but can clutter up your workspace with lots of objects that you have to name individually. With multiple steps, that can be hard to keep track of.</p>
 <p>You can also nest functions (i.e. one function inside of another), like this:</p>
 <pre class="r"><code>monticello_nest &lt;- select(filter(homes, hsdistrict == &quot;Monticello&quot;), totalvalue, age)</code></pre>
-<p>This can be difficult to read if too many functions are nested, as R evaluates the expression from the inside out (in this case, filtering, then selecting).</p>
+<p>This can be difficult to read if too many functions are nested, as R evaluates the expression from the inside out (in this case, first <code>filter()</code>, then <code>select()</code>).</p>
 <p>The best option is a “pipe.” Pipes let you take the output of one function and send it directly to the next, which is useful when you want to apply many functions to the same data frame. The pipe operator looks like <code>%&gt;%</code>. You can also type <em>CTRL/CMD + Shift + M</em> as a keyboard shortcut. (M since the pipe originally came from the <code>magrittr</code> package.) It is helpful to say yourself “and then” when you see a pipe.</p>
 <p>You don’t need to put the data frame <code>homes</code> inside the parentheses. It already gets piped in right at the beginning. A pipe moves left to right.</p>
 <p>Let’s recreate the above examples with a pipe:</p>
@@ -859,25 +859,6 @@ homes</code></pre>
 <p>Create a new data frame from the <code>homes</code> data that meets the following criteria: contains only the <code>hsdistrict</code> column and a new column called <code>total_baths</code> containing a value that is equal to the total number of baths (<code>fullbath</code> plus <code>halfbath</code> times 0.5). Only the rows where total_baths is greater than 4.5 should be shown in the final data frame.</p>
 <p>Hint: think about how the commands should be ordered to produce this data frame!</p>
 <p>Save object as: <code>homes_totalbaths</code>.</p>
-<pre class="r"><code>homes_totalbaths &lt;- homes %&gt;% 
-  mutate(total_baths = fullbath + halfbath * 0.5) %&gt;% 
-  filter(total_baths &gt; 4.5) %&gt;% 
-  select(hsdistrict, total_baths)
-homes_totalbaths</code></pre>
-<pre><code>## # A tibble: 949 x 2
-##    hsdistrict        total_baths
-##    &lt;chr&gt;                   &lt;dbl&gt;
-##  1 Albemarle                 5  
-##  2 Albemarle                 5.5
-##  3 Western Albemarle         6  
-##  4 Western Albemarle         5  
-##  5 Western Albemarle         5.5
-##  6 Western Albemarle         6  
-##  7 Western Albemarle         5.5
-##  8 Western Albemarle         5.5
-##  9 Western Albemarle         5.5
-## 10 Western Albemarle         5  
-## # ... with 939 more rows</code></pre>
 </div>
 <div id="group_by-and-summarize-compare-groups-with-split-apply-combine-data-analysis" class="section level2">
 <h2>Group_by and Summarize: compare groups with “split-apply-combine” data analysis</h2>
@@ -922,19 +903,6 @@ homes %&gt;%
 <div id="your-turn-10" class="section level2">
 <h2>Your turn #10</h2>
 <p>Use <code>group_by()</code> and <code>summarize()</code> to find the mean and max number of full baths for each middle school district. (Do not save the object.)</p>
-<pre class="r"><code>homes %&gt;% 
-  group_by(msdistrict) %&gt;% 
-  summarise(meanbath = mean(fullbath, na.rm = TRUE),
-            maxbath = max(fullbath, na.rm = TRUE))</code></pre>
-<pre><code>## # A tibble: 6 x 3
-##   msdistrict meanbath maxbath
-## * &lt;chr&gt;         &lt;dbl&gt;   &lt;dbl&gt;
-## 1 Burley         2.42       9
-## 2 Henley         2.46       8
-## 3 Jouett         2.37       9
-## 4 Sutherland     2.26       7
-## 5 Unassigned     2.4        4
-## 6 Walton         1.98       9</code></pre>
 </div>
 <div id="export-your-data" class="section level2">
 <h2>Export your data</h2>
@@ -946,18 +914,25 @@ homes %&gt;%
 <div id="another-quick-r-markdown-note" class="section level2">
 <h2>Another quick R Markdown note</h2>
 <p>Now that we are finished, we can wrap things up by clicking the “Knit…Knit to HTML” button at the top. We should see our complete document in the Viewer.</p>
-<p><strong>If you have never worked with R Markdown before, a “Install Required Packages” dialog will pop up that will ask if you want to install the required packages, which includes rmarkdown and knitr. Click Yes.</strong></p>
+<p><em>If you have never worked with R Markdown before, a “Install Required Packages” dialog will pop up that will ask if you want to install the required packages, which includes rmarkdown and knitr. Click Yes.</em></p>
+</div>
+<div id="cheat-sheets" class="section level2">
+<h2>Cheat Sheets</h2>
+<ul>
+<li>RStudio’s <a href="https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf">Data Wrangling with dplyr and tidyr Cheat sheet</a></li>
+<li>RStudio’s <a href="https://rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf">R Markdown Cheat Sheet</a></li>
+</ul>
 </div>
 <div id="what-we-did-not-cover" class="section level2">
 <h2>What we did not cover</h2>
 <p>There’s only so much we can cover in a 90 minute workshop! Here are more functions and packages to consider:</p>
 <ul>
 <li><code>base::lapply()</code>: apply a function over a list or vector</li>
+<li><code>base::union()</code>, <code>intersect()</code>, <code>setdiff()</code>, and <code>setequal()</code>: set operations</li>
 <li><code>dplyr::bind_rows()</code> and <code>bind_cols()</code>: bind data frames by row and column</li>
 <li><code>dplyr::left_join()</code>, <code>right_join()</code>, <code>inner_join()</code>, and <code>full_join()</code>: mutating joins on relational data</li>
 <li><code>dplyr::semi_join()</code> and <code>anti_join()</code>: filtering joins on relational data</li>
 <li><code>dplyr::mutate(across())</code>: applies the same transformation to multiple columns</li>
-<li><code>base::union()</code>, <code>intersect()</code>, <code>setdiff()</code>, and <code>setequal()</code>: set operations</li>
 <li><code>tidyr::pivot_longer()</code> and <code>pivot_wider()</code> to reshape data</li>
 <li><code>tidyr::unite()</code> and <code>separate()</code>: create new columns by pasting strings together and separate character columns with regular expressions</li>
 <li><code>readr::parse_factors()</code>: parse factors</li>
@@ -982,13 +957,6 @@ homes %&gt;%
 <ul>
 <li><a href="https://uvastatlab.github.io/phdplus2020/">PhD Plus series</a> for Exploratory Data Analysis and Data Preparation, by David Martin - step by step data prep for the Homes dataset we used today</li>
 <li>UVA Library Research Data Services Fall 2019 <a href="https://clayford.github.io/DWR/">Data Wrangling in R workshop</a>, by Clay Ford - wide coverage of data wrangling concepts</li>
-</ul>
-</div>
-<div id="cheat-sheets" class="section level2">
-<h2>Cheat Sheets</h2>
-<ul>
-<li>RStudio’s <a href="https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf">Data Wrangling with dplyr and tidyr Cheat sheet</a></li>
-<li>RStudio’s <a href="https://rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf">R Markdown Cheat Sheet</a></li>
 </ul>
 </div>
 <div id="citation" class="section level2">
