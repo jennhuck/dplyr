@@ -24,7 +24,7 @@ We rely on the Albemarle homes data prepared by UVA Library StatLab. Learn more 
 
 ## Dependencies / How to Install
 
-You need the most current version of R, and three packages: dplyr, readr, and knitr.  It is less critical that RStudio is updated to the latest package. [Installing and updating instructions for R are here](https://uvastatlab.github.io/phdplus2021/installR). 
+You need the most current version of R, and three packages: dplyr, readr, and knitr.  It is less critical that RStudio is updated to the latest package. [Installing and updating instructions for R are here](https://jennhuck.github.io/workshops/install_update_R.html). 
 
 See the install.R file for R code to install the three packages needed.
 
