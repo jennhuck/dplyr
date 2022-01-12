@@ -3,7 +3,7 @@
     "path": "C:/Users/jah2ax.ESERVICES/Documents/GitHub/dplyr/documents/dplyr.Rmd",
     "project_path": "documents/dplyr.Rmd",
     "type": "r_markdown",
-    "hash": "3182623388",
+    "hash": "207986967",
     "contents": "",
     "dirty": false,
     "created": 1611169128893.0,
@@ -12,16 +12,16 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "23,3",
-        "scrollLine": "18",
+        "cursorPosition": "347,86",
+        "scrollLine": "344",
         "last_setup_crc32": ""
     },
     "folds": "",
-    "lastKnownWriteTime": 1614719785,
+    "lastKnownWriteTime": 1642010383,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1614719785387,
+    "last_content_update": 1642010383245,
     "read_only": false,
     "read_only_alternatives": []
 }

@@ -1,7 +1,7 @@
 ---
 title: "Data Transformation in R with dplyr - Answers"
 author: "Jennifer Huck"
-date: "Spring 2021"
+date: "Spring 2022"
 output: html_document
 ---
 
@@ -359,8 +359,10 @@ And since you did all that work, you might want to save a new, clean dataset.  D
 It's best practice to put your processed data in a folder separate from your raw data.
 
 ```{r export}
+dir.create("../data-processed")
 write_rds(homes, "../data-processed/albemarle_homes_2020_processed.Rds")
 ```
+
 
 ## Another quick R Markdown note
 Now that we are finished, we can wrap things up by clicking the "Knit...Knit to HTML" button at the top.  We should see our complete document in the Viewer. 
@@ -369,8 +371,8 @@ Now that we are finished, we can wrap things up by clicking the "Knit...Knit to 
 
 ## Cheat Sheets
 
-* RStudio's [Data Wrangling with dplyr and tidyr Cheat sheet](https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
-* RStudio's [R Markdown Cheat Sheet](https://rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf)
+* RStudio's [Data Wrangling with dplyr and tidyr Cheat sheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-transformation.pdf)
+* RStudio's [R Markdown Cheat Sheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/rmarkdown.pdf)
 
 ## What we did not cover
 There's only so much we can cover in a 90 minute workshop!  Here are more functions and packages to consider:
@@ -407,4 +409,4 @@ Previous UVA Library workshops on data wrangling using the Albemarle County home
 
 ## Citation
 
-This workshop was designed in part using Data Carpentry's ["R for Social Scientists - Introducing dplyr and tidyr"](https://datacarpentry.org/r-socialsci/03-dplyr-tidyr/index.html) workshop, licensed under CC-BY 4.0 2018–2020 by The Carpentries, as well as R-Ladies Sydney RYouWithMe [CleanItUp](https://rladiessydney.org/courses/ryouwithme/02-cleanitup-1/) series.
+This workshop was designed in part using Data Carpentry's ["R for Social Scientists - Introducing dplyr and tidyr"](https://datacarpentry.org/r-socialsci/03-dplyr-tidyr/index.html) workshop, licensed under CC-BY 4.0 2018–2022 by The Carpentries, as well as R-Ladies Sydney RYouWithMe [CleanItUp](https://rladiessydney.org/courses/ryouwithme/02-cleanitup-1/) series.

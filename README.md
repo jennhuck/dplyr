@@ -34,10 +34,6 @@ This workshop will teach you the basics of dplyr.  The [answers](https://jennhuc
 
 dplyr workshop project directory:
 
-+-- data-processed
-
-|---\\-- empty.csv
-
 +-- data-raw
 
 |---\\-- albemarle_homes_2020.csv
@@ -57,7 +53,3 @@ dplyr workshop project directory:
 +-- install.R
 
 \\-- README.md
-
-
-The `data-processed` folder contains empty.csv.  Please ignore that file - I have to include a file for GitHub to maintin the sub-directory structure.  
-
