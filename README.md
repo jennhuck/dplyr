@@ -30,7 +30,7 @@ See the install.R file for R code to install the three packages needed.
 
 ## Project goals and description 
 
-This workshop will teach you the basics of dplyr.  The [answers](https://jennhuck.github.io/workshops/dplyr_answers.html) to the workshop exercises are available.
+This workshop will teach you the basics of dplyr.  
 
 dplyr workshop project directory:
 
